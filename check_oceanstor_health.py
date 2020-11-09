@@ -22,17 +22,10 @@ import signal
 import atexit
 from OceanStor import OceanStor
 
-class NagiosStatusCodes(Enum):
-    OK = 0
-    WARNING = 1
-    CRITICAL = 2
-    UNKNOWN = 3
-
-
 def signal_handler(signal, frame):
     """Handle timeouts, exiting with a nice message."""
     print('UNKNOWN: Timeout contacting device or Ctrl+C')
-    sys.exit(NagiosStatusCodes.UNKNOWN)
+    sys.exit(3)
 
 def main():
     parser = argparse.ArgumentParser('Check Oceanstor Health')
@@ -68,7 +61,7 @@ def main():
         os.login()
     except Exception as e:
         print("CRITICAL: Login failed: {0}".format(e))
-        sys.exit(NagiosStatusCodes.CRITICAL)
+        sys.exit(2)
 
     # cleaup if logged in
     atexit.register(os.logout)
@@ -91,7 +84,7 @@ def main():
         result_list.append(os.check_component_health('fc_port', 'FC Port'))
     except Exception as e:
         print("CRITICAL: Exception while accessing the device: {0}".format(e))
-        sys.exit(NagiosStatusCodes.CRITICAL)
+        sys.exit(2)
 
     for ret in result_list:
         for i in ret:
@@ -113,14 +106,14 @@ def main():
     if criticals != 0:
         print(
             "CRITICAL: {0}/{1} components reported FAULTY. {2}".format(criticals, loops, text))
-        sys.exit(NagiosStatusCodes.CRITICAL)
+        sys.exit(2)
     elif unknowns != 0:
         print(
             "UNKNOWN: {0}/{1} components reported UNKNOWN. {2}".format(criticals, loops, text))
-        sys.exit(NagiosStatusCodes.UNKNOWN)
+        sys.exit(3)
     else:
         print("OK: {0}/{1} components are healthy. {2}".format(oks, loops, text))
-        sys.exit(NagiosStatusCodes.OK)
+        sys.exit(0)
 
 
 ####################################################
