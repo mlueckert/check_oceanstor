@@ -105,11 +105,14 @@ class OceanStor(object):
             raise OceanStorError("HTTP Exception: {0}".format(e))
         return response_json
 
-
-    def login(self):
+    def login(self, scope="1"):
+        """
+        Login to the system
+        scope -- 1 = LDAP user, 0 = Local user
+        """
         try:
             formdata = {"username": self.username,
-                        "password": self.password, "scope": "0"}
+                        "password": self.password, "scope": scope}
             url = "https://{0}:8088/deviceManager/rest/{1}/sessions".\
                   format(self.host, self.system_id)
             response = self.opener.open(
