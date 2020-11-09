@@ -112,7 +112,8 @@ class OceanStor(object):
                         "password": self.password, "scope": "0"}
             url = "https://{0}:8088/deviceManager/rest/{1}/sessions".\
                   format(self.host, self.system_id)
-            response = self.opener.open(url, json.dumps(formdata))
+            response = self.opener.open(
+                url, json.dumps(formdata).encode('utf-8'))
             content = response.read()
             response_json = json.loads(content)
             # Comprvar login ok
