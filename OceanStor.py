@@ -272,3 +272,20 @@ class OceanStor(object):
         except Exception as e:
             raise OceanStorError("HTTP Exception: {0}".format(e))
         return a
+
+    def check_component_health(self, endpoint, textlabel, healtstatus="HEALTHSTATUS", identifier="LOCATION"):
+        a = list()
+        try:
+            url = "https://{0}:8088/deviceManager/rest/{1}/{2}".\
+                  format(self.host, self.system_id, endpoint)
+            response_json = self.query(url)
+            # Here we loop over the json elements in data
+            for i in response_json["data"]:
+                a.append([
+                    i[healtstatus],
+                    i[identifier],
+                    textlabel
+                ])
+        except Exception as e:
+            raise OceanStorError("HTTP Exception: {0}".format(e))
+        return a
