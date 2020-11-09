@@ -28,24 +28,24 @@ def signal_handler(signal, frame):
 
 def us(warning, critical):
     """Print usage information."""
-    print 'check_oceanstor_filesystems.py -H -s -u -p -n [-w] [-c] [-t] [-h]'
-    print "  -H, --host     : IP or DNS address"
-    print "  -s, --system   : System_id of the OceanStor"
-    print "  -u, --username : username to log into"
-    print "  -p, --password : password"
-    print "  -n, --name     : Name of the filesystem to check."
-    print "                   You can add a '*' at the end to match longer"
-    print "                   prefixes. No regexp allowed"
-    print "  -w, --warning  : Minimun % of used space expected before warning"
-    print "                   defaults to {0}".format(warning)
-    print "  -c, --critical : Minimun % of used space expected before critical"
-    print "                   defaults to {0}".format(critical)
-    print "  -W, --Swarning  : Minimun % of snapshot space expected before warning"
-    print "                   defaults to 100%"
-    print "  -C, --Scritical : Minimun % of snapshot space expected before critical"
-    print "                   defaults to 100%"
-    print "  -t, --timeout  : timeout in seconds"
-    print "  -h, --help     : This text"
+    print('check_oceanstor_filesystems.py -H -s -u -p -n [-w] [-c] [-t] [-h]')
+    print("  -H, --host     : IP or DNS address")
+    print("  -s, --system   : System_id of the OceanStor")
+    print("  -u, --username : username to log into")
+    print("  -p, --password : password")
+    print("  -n, --name     : Name of the filesystem to check.")
+    print("                   You can add a '*' at the end to match longer")
+    print("                   prefixes. No regexp allowed")
+    print("  -w, --warning  : Minimun % of used space expected before warning")
+    print("                   defaults to {0}".format(warning))
+    print("  -c, --critical : Minimun % of used space expected before critical")
+    print("                   defaults to {0}".format(critical))
+    print("  -W, --Swarning  : Minimun % of snapshot space expected before warning")
+    print("                   defaults to 100%")
+    print("  -C, --Scritical : Minimun % of snapshot space expected before critical")
+    print("                   defaults to 100%")
+    print("  -t, --timeout  : timeout in seconds")
+    print("  -h, --help     : This text")
 
 
 def main(argv):
@@ -106,7 +106,7 @@ def main(argv):
     #   Verificacions sobre els parametres
     for i in [host, system_id, username, password, timeout, name]:
         if i is None:
-            print 'ERROR: Missing mandatory parameter'
+            print('ERROR: Missing mandatory parameter')
             us(warning, critical)
             sys.exit(3)
 
@@ -116,7 +116,7 @@ def main(argv):
     os = OceanStor(host, system_id, username, password, timeout)
     # Connectar
     if not os.login():
-        print 'ERROR: Unable to login'
+        print('ERROR: Unable to login')
         sys.exit(3)
     # cleaup if logged in
     atexit.register(os.logout)
@@ -131,7 +131,7 @@ def main(argv):
     okfs = ""
     fs = os.filesystems(name)
     if fs is None:
-        print "ERROR: filesystem {0} not found" . format(name)
+        print("ERROR: filesystem {0} not found" . format(name))
         sys.exit(2)
     for i in fs:
         prefix = "OK:"
@@ -152,22 +152,22 @@ def main(argv):
         performance = performance + " '{0}'={1:.2f}%".format(i[0], i[3]) + \
               " '{0}_snapshots'={1:.2f}%".format(i[0], i[6])
     if criticals > 0:
-        print "CRITICAL: [{0}] in CRITICAL state, [{1}] in WARNING state, [{2}] OK"\
-              .format(criticalfs, warningfs, okfs)
-        print text + performance
+        print("CRITICAL: [{0}] in CRITICAL state, [{1}] in WARNING state, [{2}] OK"\
+              .format(criticalfs, warningfs, okfs))
+        print(text + performance)
         exit(2)
     elif warnings > 0:
-        print "WARNING: [{0}] in WARNING state, [{1}] OK"\
-              .format(warningfs, okfs)
-        print text + performance
+        print("WARNING: [{0}] in WARNING state, [{1}] OK"\
+              .format(warningfs, okfs))
+        print(text + performance)
         sys.exit(1)
     else:
-        print "OK: [{0}] OK".format(okfs)
-        print text + performance
+        print("OK: [{0}] OK".format(okfs))
+        print(text + performance)
         sys.exit(0)
 
     # No s'hauria d'arribar aqui, pero per si les mosques
-    print "OK. Nothing monitored so far."
+    print("OK. Nothing monitored so far.")
     sys.exit(0)
 
 

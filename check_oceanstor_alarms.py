@@ -32,13 +32,13 @@ def signal_handler(signal, frame):
 
 def us():
     """Print usage information."""
-    print 'check_oceanstor_alarms.py -H -s -u -p [-t] [-h]'
-    print "  -H, --host     : IP or DNS address"
-    print "  -s, --system   : System_id of the OceanStor"
-    print "  -u, --username : username to log into"
-    print "  -p, --password : password"
-    print "  -t, --timeout  : timeout in seconds"
-    print "  -h, --help     : This text"
+    print('check_oceanstor_alarms.py -H -s -u -p [-t] [-h]')
+    print("  -H, --host     : IP or DNS address")
+    print("  -s, --system   : System_id of the OceanStor")
+    print("  -u, --username : username to log into")
+    print("  -p, --password : password")
+    print("  -t, --timeout  : timeout in seconds")
+    print("  -h, --help     : This text")
 
 
 def main(argv):
@@ -80,7 +80,7 @@ def main(argv):
     #   Verificacions sobre els parametres
     for i in [host, system_id, username, password, timeout]:
         if i is None:
-            print 'ERROR: Missing mandatory parameter'
+            print('ERROR: Missing mandatory parameter')
             us()
             sys.exit(3)
 
@@ -90,7 +90,7 @@ def main(argv):
     os = OceanStor(host, system_id, username, password, timeout)
     # Connectar
     if not os.login():
-        print 'ERROR: Unable to login'
+        print('ERROR: Unable to login')
         sys.exit(3)
     # cleaup if logged in
     atexit.register(os.logout)
@@ -110,16 +110,16 @@ def main(argv):
         else:
             severity[i[0]] = severity[i[0]] + 1
     if num > 0:
-        print "ERROR: {0} alarms found {1} | alarms={0}".format(num,
-                                                                severity)
-        print text
+        print("ERROR: {0} alarms found {1} | alarms={0}".format(num,
+                                                                severity))
+        print(text)
         exit(2)
     else:
-        print "OK: no alarms found | alarms=0"
+        print("OK: no alarms found | alarms=0")
         exit(0)
 
     # No s'hauria d'arribar aqui, pero per si les mosques
-    print "OK. Nothing monitored so far."
+    print("OK. Nothing monitored so far.")
     sys.exit(0)
 
 

@@ -28,20 +28,20 @@ def signal_handler(signal, frame):
 
 def us(warning, critical):
     """Print usage information."""
-    print 'check_oceanstor_storagepools.py -H -s -u -p -n [-w] [-c] [-t] [-h]'
-    print "  -H, --host     : IP or DNS address"
-    print "  -s, --system   : System_id of the OceanStor"
-    print "  -u, --username : username to log into"
-    print "  -p, --password : password"
-    print "  -n, --name     : Name of the storagepool to check."
-    print "                   You can add a '*' at the end to match longer"
-    print "                   prefixes. No regexp allowed"
-    print "  -w, --warning  : Minimun % of used space expected before warning"
-    print "                   defaults to {0}".format(warning)
-    print "  -c, --critical : Minimun % of used space expected before critical"
-    print "                   defaults to {0}".format(critical)
-    print "  -t, --timeout  : timeout in seconds"
-    print "  -h, --help     : This text"
+    print('check_oceanstor_storagepools.py -H -s -u -p -n [-w] [-c] [-t] [-h]')
+    print("  -H, --host     : IP or DNS address")
+    print("  -s, --system   : System_id of the OceanStor")
+    print("  -u, --username : username to log into")
+    print("  -p, --password : password")
+    print("  -n, --name     : Name of the storagepool to check.")
+    print("                   You can add a '*' at the end to match longer")
+    print("                   prefixes. No regexp allowed")
+    print("  -w, --warning  : Minimun % of used space expected before warning")
+    print("                   defaults to {0}".format(warning))
+    print("  -c, --critical : Minimun % of used space expected before critical")
+    print("                   defaults to {0}".format(critical))
+    print("  -t, --timeout  : timeout in seconds")
+    print("  -h, --help     : This text")
 
 
 def check_error_level(status, level, health):
@@ -107,7 +107,7 @@ def main(argv):
     #   Verificacions sobre els parametres
     for i in [host, system_id, username, password, timeout, name]:
         if i is None:
-            print 'ERROR: Missing mandatory parameter'
+            print('ERROR: Missing mandatory parameter')
             us(warning, critical)
             sys.exit(3)
 
@@ -117,7 +117,7 @@ def main(argv):
     os = OceanStor(host, system_id, username, password, timeout)
     # Connectar
     if not os.login():
-        print 'ERROR: Unable to login'
+        print('ERROR: Unable to login')
         sys.exit(3)
     # cleaup if logged in
     atexit.register(os.logout)
@@ -133,7 +133,7 @@ def main(argv):
     oksp = ""
     fs = os.storagepools(name)
     if fs is None:
-        print "ERROR: storagepool {0} not found" . format(name)
+        print("ERROR: storagepool {0} not found" . format(name))
         sys.exit(2)
     # Check for space usage
     for i in fs:
@@ -150,22 +150,22 @@ def main(argv):
               .format(i[0], i[4], i[1], i[2], i[3])
         performance = performance + " '{0}'={1:.2f}%".format(i[0], i[3])
     if criticals > 0:
-        print "CRITICAL: {0} [{1}] in CRITICAL state, {2} [{3}] in WARNING state, {4} [{5}] OK"\
-              .format(criticals, criticalsp, warnings, warningsp, oks, oksp)
-        print text + performance
+        print("CRITICAL: {0} [{1}] in CRITICAL state, {2} [{3}] in WARNING state, {4} [{5}] OK"\
+              .format(criticals, criticalsp, warnings, warningsp, oks, oksp))
+        print(text + performance)
         exit(2)
     elif warnings > 0:
-        print "WARNING: {0} [{1}] in WARNING state, {2} [{3}] OK"\
-              .format(warnings, warningsp, oks, oksp)
-        print text + performance
+        print("WARNING: {0} [{1}] in WARNING state, {2} [{3}] OK"\
+              .format(warnings, warningsp, oks, oksp))
+        print(text + performance)
         sys.exit(1)
     else:
-        print "OK: {0} [{1}] OK".format(oks, oksp)
-        print text + performance
+        print("OK: {0} [{1}] OK".format(oks, oksp))
+        print(text + performance)
         sys.exit(0)
 
     # No s'hauria d'arribar aqui, pero per si les mosques
-    print "OK. Nothing monitored so far."
+    print("OK. Nothing monitored so far.")
     sys.exit(0)
 
 
