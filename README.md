@@ -7,6 +7,7 @@ Commands implemented
 - check_oceanstor_filesystems.py: Checks free space on filesystems
 - check_oceanstor_diskdomains.py: Checks free space on diskdomains
 - check_oceanstor_storagepools.py: Checks free space on storagepools
+- check_oceanstor_health.py: Performs various checks against the main components (Enclosure, Controller, Disk, Eth Ports, FC Ports)
 
 Just an small subset of what is possible is implemented, but it's what we need.
 EVERYTHING on an OceanStor can be done using the API. If not convinced,
@@ -18,6 +19,18 @@ Google "Huawei OceanStor REST API" for the documentation
 Feel free to fork and extend
 
 ## Examples
+
+* Check the general health with minimal output.
+```
+check_oceanstor_health.py -H <ADDRESS> -u <USER> -p <PWD> -s <SYSTEM_ID>
+OK: 81/81 components are healthy.
+```
+
+* Check the general health with full output.
+```
+check_oceanstor_health.py -H <ADDRESS> -u <USER> -p <PWD> -s <SYSTEM_ID> -f
+OK: 81/81 components are healthy.  </br>Enclosure XXXX reported status NORMAL. </br>Enclosure XXXX reported status NORMAL. </br>Controller 0A reported status NORMAL. </br>Controller 0B reported status NORMAL. </br>Disk CTE0.0 reported status NORMAL. </br>Disk CTE0.1 reported status NORMAL. </br>Disk CTE0.2 reported status NORMAL. </br>Disk CTE0.3 reported status NORMAL. </br>Disk CTE0.4 reported status NORMAL. </br>Disk CTE0.5 reported status NORMAL. </br>Disk CTE0.6 reported status NORMAL. </br>Disk CTE0.7 reported status NORMAL. </br>Disk CTE0.8 reported status NORMAL. </br>Disk CTE0.9 reported status NORMAL. </br>Disk CTE0.10 reported status NORMAL. </br>Disk CTE0.11 reported status NORMAL. </br>Disk CTE0.12 reported status NORMAL. </br>Disk CTE0.13 reported status NORMAL. </br>Disk CTE0.14 reported status NORMAL. </br>Disk CTE0.15 reported status NORMAL. </br>Disk CTE0.16 reported status NORMAL. </br>Disk CTE0.17 reported status NORMAL. </br>Disk CTE0.18 reported status NORMAL. </br>Disk CTE0.19 reported status NORMAL. </br>Disk CTE0.20 reported status NORMAL. </br>Disk CTE0.21 reported status NORMAL. </br>Disk CTE0.22 reported status NORMAL. </br>Disk CTE0.23 reported status NORMAL. </br>Disk CTE0.24 reported status NORMAL. </br>Disk CTE0.25 reported status NORMAL. </br>Disk CTE0.26 reported status NORMAL. </br>Disk CTE0.27 reported status NORMAL. </br>Disk CTE0.28 reported status NORMAL. </br>Disk CTE0.29 reported status NORMAL. </br>Disk CTE0.30 reported status NORMAL. </br>Disk CTE0.31 reported status NORMAL. </br>Disk CTE0.32 reported status NORMAL. </br>Disk CTE0.33 reported status NORMAL. </br>Disk CTE0.34 reported status NORMAL. </br>Disk CTE0.35 reported status NORMAL. </br>Disk DAE010.0 reported status NORMAL. </br>ETH Port CTE0.A.IOM0.P0 reported status NORMAL. </br>ETH Port CTE0.A.IOM0.P1 reported status NORMAL. </br>ETH Port CTE0.A.IOM0.P2 reported status NORMAL. </br>ETH Port CTE0.A.IOM0.P3 reported status NORMAL. </br>ETH Port CTE0.A.P0 reported status NORMAL. </br>ETH Port CTE0.A.P1 reported status NORMAL. </br>ETH Port CTE0.A.MGMT reported status NORMAL. </br>ETH Port CTE0.A.MAINTENANCE reported status NORMAL. </br>ETH Port CTE0.B.IOM0.P0 reported status NORMAL. </br>ETH Port CTE0.B.IOM0.P1 reported status NORMAL. </br>ETH Port CTE0.B.IOM0.P2 reported status NORMAL. </br>ETH Port CTE0.B.IOM0.P3 reported status NORMAL. </br>ETH Port CTE0.B.P0 reported status NORMAL. </br>ETH Port CTE0.B.P1 reported status NORMAL. </br>ETH Port CTE0.B.MGMT reported status NORMAL. </br>ETH Port CTE0.B.MAINTENANCE reported status NORMAL. </br>ETH Port DAE010.A.P0 reported status NORMAL. </br>ETH Port DAE010.A.P1 reported status NORMAL. </br>ETH Port DAE010.A.P2 reported status NORMAL. </br>ETH Port DAE010.A.P3 reported status NORMAL. </br>ETH Port DAE010.B.P0 reported status NORMAL. </br>ETH Port DAE010.B.P1 reported status NORMAL. </br>ETH Port DAE010.B.P2 reported status NORMAL. </br>ETH Port DAE010.B.P3 reported status NORMAL. </br>FC Port CTE0.A.IOM1.P0 reported status NORMAL. </br>FC Port CTE0.A.IOM1.P1 reported status NORMAL. </br>FC Port CTE0.A.IOM1.P2 reported status NORMAL. </br>FC Port CTE0.A.IOM1.P3 reported status NORMAL. </br>FC Port CTE0.A.IOM2.P0 reported status NORMAL. </br>FC Port CTE0.A.IOM2.P1 reported status NORMAL. </br>FC Port CTE0.A.IOM2.P2 reported status NORMAL. </br>FC Port CTE0.A.IOM2.P3 reported status NORMAL. </br>FC Port CTE0.B.IOM1.P0 reported status NORMAL. </br>FC Port CTE0.B.IOM1.P1 reported status NORMAL. </br>FC Port CTE0.B.IOM1.P2 reported status NORMAL. </br>FC Port CTE0.B.IOM1.P3 reported status NORMAL. </br>FC Port CTE0.B.IOM2.P0 reported status NORMAL. </br>FC Port CTE0.B.IOM2.P1 reported status NORMAL. </br>FC Port CTE0.B.IOM2.P2 reported status NORMAL. </br>FC Port CTE0.B.IOM2.P3 reported status NORMAL.
+```
 
 * Check one filesystem, including space used for "Data Protection", aka snapshots.
 ```
