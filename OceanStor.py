@@ -12,16 +12,20 @@
 # Octubre 2017
 #
 # Modifications
-#   
+#
 #   Jan 2020: Adapt to python for centos /
 # TODO:
 #
-import urllib
-import urllib2
+import urllib.request
+import urllib.parse
+import urllib.error
+import urllib.request
+import urllib.error
+import urllib.parse
 import ssl
 import json
 import datetime
-from cookielib import CookieJar
+from http.cookiejar import CookieJar
 
 
 class OceanStorError(Exception):
@@ -46,9 +50,10 @@ class OceanStor(object):
         # Create reusable http components
         self.cookies = CookieJar()
         self.ctx = ssl._create_unverified_context()
-        self.opener = urllib2.build_opener(urllib2.HTTPSHandler(context=self.ctx),
-                                           urllib2.HTTPCookieProcessor(self.cookies))
-        self.opener.addheaders = [('Content-Type', 'application/json; charset=utf-8')]
+        self.opener = urllib.request.build_opener(urllib.request.HTTPSHandler(context=self.ctx),
+                                                  urllib.request.HTTPCookieProcessor(self.cookies))
+        self.opener.addheaders = [
+            ('Content-Type', 'application/json; charset=utf-8')]
 
     def alarm_level_text(self, level):
         if level == 3:
@@ -88,8 +93,7 @@ class OceanStor(object):
 
     def date_to_human(self, timestamp):
         return datetime.datetime.fromtimestamp(
-                        int(timestamp)).strftime('%Y-%m-%d %H:%M:%S')
-
+            int(timestamp)).strftime('%Y-%m-%d %H:%M:%S')
 
     def query(self, url):
         try:
@@ -99,8 +103,8 @@ class OceanStor(object):
             # Comprovar si request ok
             if response_json['error']['code'] != 0:
                 raise OceanStorError(
-                        "ERROR: Got an error response from system ({0})".
-                        format(response_json['error']['code']))
+                    "ERROR: Got an error response from system ({0})".
+                    format(response_json['error']['code']))
         except Exception as e:
             raise OceanStorError("HTTP Exception: {0}".format(e))
         return response_json
@@ -122,8 +126,8 @@ class OceanStor(object):
             # Comprvar login ok
             if response_json['error']['code'] != 0:
                 raise OceanStorError(
-                        "ERROR: Got an error response from system ({0})".
-                        format(response_json['error']['code']))
+                    "ERROR: Got an error response from system ({0})".
+                    format(response_json['error']['code']))
             self.iBaseToken = response_json['data']['iBaseToken']
             self.opener.addheaders = [('iBaseToken', self.iBaseToken)]
         except Exception as e:
@@ -134,14 +138,13 @@ class OceanStor(object):
         try:
             url = "https://{0}:8088/deviceManager/rest/{1}/sessions".\
                   format(self.host, self.system_id)
-            request = urllib2.Request(url)
+            request = urllib.request.Request(url)
             request.get_method = lambda: 'DELETE'
             f = self.opener.open(request)
             content = f.read()
         except:
             # No error control. We are quitting anyway
             return
-
 
     def system(self):
         try:
@@ -178,15 +181,15 @@ class OceanStor(object):
                 wildcard = False
             url = "https://{0}:8088/deviceManager/rest/{1}/filesystem?".\
                   format(self.host, self.system_id)
-            url = url + urllib.urlencode({'filter': 'NAME:{0}'.
-                                          format(pattern)})
+            url = url + urllib.parse.urlencode({'filter': 'NAME:{0}'.
+                                                format(pattern)})
             response_json = self.query(url)
             # Get interesting data into list
             for i in response_json["data"]:
                 if (
                     (wildcard and i["NAME"].startswith(pattern)) or
                     (not wildcard and i["NAME"] == pattern)
-                   ):
+                ):
                     if i["ISCLONEFS"] == "false":
                         size = float(i["CAPACITY"])/1024 / \
                             1024*(self.sectorsize/1024)  # To GB
@@ -209,7 +212,6 @@ class OceanStor(object):
             raise OceanStorError("HTTP Exception: {0}".format(e))
         return a
 
-
     def diskdomains(self, pattern):
         a = list()
         try:
@@ -220,16 +222,18 @@ class OceanStor(object):
             else:
                 wildcard = False
             url = "https://{0}:8088/deviceManager/rest/{1}/diskpool".\
-                   format(self.host, self.system_id)
+                format(self.host, self.system_id)
             response_json = self.query(url)
             # Get interesting data into list
             for i in response_json["data"]:
                 if (
                     (wildcard and i["NAME"].startswith(pattern)) or
                     (not wildcard and i["NAME"] == pattern)
-                   ):
-                    size = float(i["TOTALCAPACITY"])/1024/1024*(self.sectorsize/1024)  # To GB
-                    free = float(i["FREECAPACITY"])/1024/1024*(self.sectorsize/1024)   # To GB
+                ):
+                    size = float(i["TOTALCAPACITY"])/1024/1024 * \
+                        (self.sectorsize/1024)  # To GB
+                    free = float(i["FREECAPACITY"])/1024/1024 * \
+                        (self.sectorsize/1024)   # To GB
                     pctused = (1-(free/size))*100
                     a.append([i["NAME"],
                               size,
@@ -241,7 +245,6 @@ class OceanStor(object):
             raise OceanStorError("HTTP Exception: {0}".format(e))
         return a
 
-
     def storagepools(self, pattern):
         a = list()
         try:
@@ -252,16 +255,18 @@ class OceanStor(object):
             else:
                 wildcard = False
             url = "https://{0}:8088/deviceManager/rest/{1}/storagepool".\
-                   format(self.host, self.system_id)
+                format(self.host, self.system_id)
             response_json = self.query(url)
             # Get interesting data into list
             for i in response_json["data"]:
                 if (
                     (wildcard and i["NAME"].startswith(pattern)) or
                     (not wildcard and i["NAME"] == pattern)
-                   ):
-                    size = float(i["USERTOTALCAPACITY"])/1024/1024*(self.sectorsize/1024)  # To GB
-                    free = float(i["USERFREECAPACITY"])/1024/1024*(self.sectorsize/1024)  # To GB
+                ):
+                    size = float(i["USERTOTALCAPACITY"])/1024 / \
+                        1024*(self.sectorsize/1024)  # To GB
+                    free = float(i["USERFREECAPACITY"])/1024 / \
+                        1024*(self.sectorsize/1024)  # To GB
                     pctused = (1-(free/size))*100
                     a.append([i["NAME"],
                               size,
